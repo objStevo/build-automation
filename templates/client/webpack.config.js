@@ -1,30 +1,22 @@
 const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
-// Instantiate the plugin.
-// The `template` property defines the source
-// of a template file that this plugin will use.
-// We will create it later.
 const htmlPlugin = new HtmlWebPackPlugin({
-  template: "./src/index.html",
+  template: "./public/index.html",
 });
 
 module.exports = {
-  // Our application entry point.
   entry: "./src/index.tsx",
-  
-  // These rules define how to deal 
-  // with files with given extensions.
-  // For example, .tsx files 
-  // will be compiled with ts-loader,
-  // a spcific loader for webpack
-  // that knows how to work with TypeScript files.
+  mode: "development",
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.(ts|tsx)$/,
         use: "ts-loader",
         exclude: /node_modules/,
+        resolve: {
+          extensions: [".ts", ".tsx", ".js", ".json"],
+        },
       },
     ],
   },
