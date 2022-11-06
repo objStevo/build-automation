@@ -22,7 +22,7 @@ npm i @types/react @types/react-redux @types/react-router-dom @types/react-dom -
 # touch .env ./packages/server
 cp -r ../templates/client/. ./packages/client
 cp -r ../templates/utils/. ./prepack-scripts
-cp ../templates/server/tsconfig.json ./packages/server 
+cp -r ../templates/server/. ./packages/server 
 
 # Run pre package scripts
 node ./prepack-scripts/updateJson
