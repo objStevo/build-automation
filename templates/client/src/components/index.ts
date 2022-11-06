@@ -1,3 +1,3 @@
-import { Template } from './Template/HelloWorld';
+import { HelloWorld } from './Template/HelloWorld';
 
-export {Template};
+export {HelloWorld};
