@@ -1,3 +1,4 @@
+#!/bin/bash
 # Take user input
 read -p "Please provide a project title: " title
 echo Generating build for project $title...
@@ -15,9 +16,12 @@ npm init -y -w ./packages/server
 npm i typescript dotenv --workspaces --save-dev
 
 #Install client dependencies
-npm i webpack webpack-cli webpack-dev-server html-webpack-plugin ts-loader -w ./packages/client --save-dev
+npm i webpack webpack-cli webpack-dev-server html-webpack-plugin ts-loader @types/react @types/react-redux @types/react-router-dom @types/react-dom -w ./packages/client --save-dev
 npm i react react-dom @reduxjs/toolkit react-redux react-router-dom request request-promise @mui/icons-material @mui/material @emotion/react @emotion/styled -w ./packages/client --save
-npm i @types/react @types/react-redux @types/react-router-dom @types/react-dom -w ./packages/client --save-dev
+
+#Install server dependencies
+npm i morgan -w ./packages/client --save-dev
+npm i express mongoose cookieParser cors -w ./packages/client --save
 
 # touch .env ./packages/server
 cp -r ../templates/client/. ./packages/client

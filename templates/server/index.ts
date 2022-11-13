@@ -1,77 +1,95 @@
-import cookieParser from 'cookie-parser';
-import express from 'express';
-import mongoose, { ConnectOptions } from 'mongoose';
-import passport from 'passport';
-import path from 'path';
-import { DATABASE_URL, PORT } from './config';
-import { dbConnect, mongoOptions } from './db-mongoose';
-import { authRouter, jwtStrategy, localStrategy } from './routes';
-const cors = require("cors");
+import express from "express";
+import morgan from "morgan";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import mongoose, { ConnectOptions } from "mongoose";
+import { DATABASE_URL, SERVER_PORT } from "./config";
+import userRoutes from "./routes/user";
 
-const port = process.env.PORT || 8000;
+// app
+const app = express();
 
-const runServer = (databaseUrl = DATABASE_URL, port = PORT) => {
+// db
+const connectDB = () => {
+  const url = DATABASE_URL;
+  const options = {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  };
+  return mongoose.connect(url, options);
+};
+
+const disconnectDB = () => {
+  return mongoose.disconnect();
+};
+
+// server
+const startServers = () => {
+  const port = SERVER_PORT;
   return new Promise<void>((resolve, reject) => {
-    mongoose.connect(databaseUrl, mongoOptions as ConnectOptions, err => {
-      if (err) {
-        return reject(err);
-      }
-      server = app
-        .listen(port, () => {
-          console.log(`Your app is listening on port ${port}`);
-          resolve();
-        })
-        .on('error', err => {
-          mongoose.disconnect();
-          reject(err);
-        });
-    });
+    connectDB
+      .then(() => {
+        console.log("DB Connected");
+      })
+      .then(() => {
+        app
+          .listen(port, () => {
+            console.log(`Your app is listening on port ${port}`);
+            resolve();
+          })
+          .on("error", (error) => {
+            disconnectDB();
+            reject(error);
+          });
+      })
+      .catch((error) => {
+        console.error(error);
+        reject(error);
+      });
   });
 };
 
-const closeServer = () => {
-  return mongoose.disconnect().then(() => {
-    return new Promise<void>((resolve, reject) => {
-      console.log('Closing server');
-      return server.close((err: any) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve();
+const closeServers = () => {
+  return new Promise<void>((resolve, reject) => {
+    disconnectDB()
+      .then(() => {
+        console.log("Closing server");
+        app.close((error) => {
+          if (error) {
+            return reject(error);
+          }
+          resolve();
+        });
+      })
+      .catch((error) => {
+        console.error(`Cannot close db: ${error}`);
       });
-    });
+  });
 };
 
-//app
-const app = express();
-
-//middlewares
+// middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-//routes middleware
-app.use("/api", authRoutes);
+// routes
+app.use("/api", userRoutes);
 
 // cors
 if (process.env.NODE_ENV === "development") {
   app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
 }
 
-const root = path.join(__dirname, '../client', 'build');
-app.use(express.static(root));
-app.get('/', (req, res) => {
-  res.sendFile('index.html', { root });
-});
-
-passport.use(localStrategy);
-passport.use(jwtStrategy);
-
-app.use('/api/auth', authRouter);
-
-let server: any;
-
 if (require.main === module) {
-  dbConnect(DATABASE_URL);
-  runServer();
+  process.on("SIGTERM", closeServers);
+  process.on("SIGINT", closeServers);
+
+  startServers()
+    .then(() => {
+      console.log("Server up and running.");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 }
