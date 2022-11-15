@@ -1,13 +1,22 @@
-'use strict';
-const templateJson = require('./package.json');
-const currentJson = require('../../packages/client/package.json')
-const fs = require('fs');
+"use strict";
+import clientTemplatePackage from './client/package.json' assert {type: 'json'};
+import clientCurrentPackage from '../../packages/client/package.json' assert {type: 'json'};
+import serverTemplatePackage from './server/package.json' assert {type: 'json'};
+import serverCurrentPackage from '../../packages/server/package.json' assert {type: 'json'};
+import fs from 'fs';
 
-const updatedJson = {...currentJson, ...templateJson};
-const data = JSON.stringify(updatedJson);
+const  clientPackagePath = "../../packages/client/package.json";
+const  serverPackagePath = "../../packages/server/package.json";
 
-fs.writeFile('./packages/client/package.json', data, (err) => {
+const updatePackage = (templatePackage, currentPackage, currentPackagePath) => {
+  const newPackage = { ...currentPackage, ...templatePackage };
+  const data = JSON.stringify(newPackage);
+
+  fs.writeFile(currentPackagePath, data, (err) => {
     if (err) throw err;
-    console.log('Data written to file');
-});
+    console.log("Data written to file");
+  });
+};
 
+updatePackage(clientTemplatePackage,clientCurrentPackage,clientPackagePath);
+updatePackage(serverTemplatePackage,serverCurrentPackage,serverPackagePath);
