@@ -32,4 +32,4 @@ cp -r ../templates/server/. ./packages/server
 node ./prepack-scripts/updateJson
 
 # Remove pre package scripts
-# rm -r ./prepack-scripts
+rm -r ./prepack-scripts
