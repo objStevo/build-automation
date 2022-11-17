@@ -20,7 +20,7 @@ npm i webpack webpack-cli webpack-dev-server html-webpack-plugin ts-loader @type
 npm i react react-dom @reduxjs/toolkit react-redux react-router-dom request request-promise @mui/icons-material @mui/material @emotion/react @emotion/styled -w ./packages/client --save
 
 #Install server dependencies
-npm i morgan -w ./packages/server --save-dev
+npm i nodemon morgan ts-node @types/nodemon @types/node @types/express @types/morgan @types/cookie-parser @types/cors @types/mongoose -w ./packages/server --save-dev
 npm i express mongoose cookie-parser cors -w ./packages/server --save
 
 # touch .env ./packages/server

@@ -4,9 +4,9 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import mongoose, { ConnectOptions } from "mongoose";
 import { DATABASE_URL, SERVER_PORT } from "./config";
-import userRoutes from "./routes/user";
+// import userRoutes from "./routes/auth";
 
-// app
+// app 
 const app = express();
 
 // db
@@ -74,7 +74,7 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 // routes
-app.use("/api", userRoutes);
+// app.use("/api", userRoutes);
 
 // cors
 if (process.env.NODE_ENV === "development") {

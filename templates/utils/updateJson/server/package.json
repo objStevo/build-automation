@@ -1,8 +1,7 @@
 {
-    "scripts": {
-        "start": "ts-node .",
-        "dev": "nodemon server.js"
-      },
-    "author": "Hernan Chalco"
-  }
-  
+  "scripts": {
+    "start": "ts-node .",
+    "dev": "../../node_modules/nodemon/bin/nodemon.js"
+  },
+  "author": "Hernan Chalco"
+}
