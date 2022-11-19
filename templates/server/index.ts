@@ -2,12 +2,26 @@ import express from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import mongoose, { ConnectOptions } from "mongoose";
+import mongoose, { ConnectOptions, Mongoose } from "mongoose";
 import { DATABASE_URL, SERVER_PORT } from "./config";
+import { Server } from "http";
 // import userRoutes from "./routes/auth";
 
-// app 
+// app
 const app = express();
+
+// routes
+// app.use("/api", userRoutes);
+
+// middlewares
+app.use(express.json());
+app.use(cookieParser());
+app.use(morgan("dev"));
+
+// cors
+if (process.env.NODE_ENV === "development") {
+  app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
+}
 
 // db
 const connectDB = () => {
@@ -17,7 +31,7 @@ const connectDB = () => {
     useCreateIndex: true,
     useFindAndModify: false,
   };
-  return mongoose.connect(url, options);
+  return mongoose.connect(url, <ConnectOptions>options);
 };
 
 const disconnectDB = () => {
@@ -25,23 +39,42 @@ const disconnectDB = () => {
 };
 
 // server
-const startServers = () => {
+const startServer = () => {
   const port = SERVER_PORT;
+  let server = null;
+  return new Promise<Server>((resolve, reject) => {
+    server = app
+      .listen(port, () => {
+        console.log(`Your app is listening on port ${port}`);
+      })
+      .on("error", (error) => {
+        disconnectDB();
+        reject(error);
+      });
+    resolve(server);
+  });
+};
+
+const closeServer = (server: Server) => {
   return new Promise<void>((resolve, reject) => {
-    connectDB
+    server.close((error) => {
+      if (error) {
+        return reject(error);
+      }
+      resolve();
+    });
+  });
+};
+
+// start systems
+const startSystems = () => {
+  return new Promise<Server>((resolve, reject) => {
+    connectDB()
       .then(() => {
         console.log("DB Connected");
       })
       .then(() => {
-        app
-          .listen(port, () => {
-            console.log(`Your app is listening on port ${port}`);
-            resolve();
-          })
-          .on("error", (error) => {
-            disconnectDB();
-            reject(error);
-          });
+        resolve(startServer());
       })
       .catch((error) => {
         console.error(error);
@@ -50,44 +83,25 @@ const startServers = () => {
   });
 };
 
-const closeServers = () => {
+// stop systems
+const stopSystems = (server: Server) => {
   return new Promise<void>((resolve, reject) => {
     disconnectDB()
       .then(() => {
-        console.log("Closing server");
-        app.close((error) => {
-          if (error) {
-            return reject(error);
-          }
-          resolve();
-        });
+        resolve(closeServer(server));
       })
       .catch((error) => {
-        console.error(`Cannot close db: ${error}`);
+        console.error(error);
       });
   });
 };
 
-// middlewares
-app.use(express.json());
-app.use(cookieParser());
-app.use(morgan("dev"));
-
-// routes
-// app.use("/api", userRoutes);
-
-// cors
-if (process.env.NODE_ENV === "development") {
-  app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
-}
-
 if (require.main === module) {
-  process.on("SIGTERM", closeServers);
-  process.on("SIGINT", closeServers);
-
   startServers()
-    .then(() => {
+    .then((value) => {
       console.log("Server up and running.");
+      process.on("SIGTERM", closeServers);
+      process.on("SIGINT", closeServers);
     })
     .catch((error) => {
       console.error(error);
