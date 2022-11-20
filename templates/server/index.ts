@@ -5,18 +5,18 @@ import cors from "cors";
 import mongoose, { ConnectOptions, Mongoose } from "mongoose";
 import { DATABASE_URL, SERVER_PORT } from "./config";
 import { Server } from "http";
-// import userRoutes from "./routes/auth";
+import templateRouter from "./routes/template";
 
 // app
 const app = express();
-
-// routes
-// app.use("/api", userRoutes);
 
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
+
+// routes
+app.use("/api", templateRouter);
 
 // cors
 if (process.env.NODE_ENV === "development") {
@@ -97,11 +97,11 @@ const stopSystems = (server: Server) => {
 };
 
 if (require.main === module) {
-  startServers()
+  startSystems()
     .then((value) => {
       console.log("Server up and running.");
-      process.on("SIGTERM", closeServers);
-      process.on("SIGINT", closeServers);
+      process.on("SIGTERM", stopSystems);
+      process.on("SIGINT", stopSystems);
     })
     .catch((error) => {
       console.error(error);

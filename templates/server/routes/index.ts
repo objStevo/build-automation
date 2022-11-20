@@ -1,1 +1,1 @@
-export { authRouter, localStrategy, jwtStrategy } from './auth';
+export { router as templateRouter } from './templates';
