@@ -1,7 +1,7 @@
-import { Router } from "express";
+import express from "express";
 import { template } from "../../controllers";
-const router = Router();
+const router = express.Router();
 
 router.get("/template", template);
 
-export default { router };
+export { router };

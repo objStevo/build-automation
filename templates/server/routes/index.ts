@@ -1,1 +1,1 @@
-export { router as templateRouter } from './templates';
+export { router as templateRouter } from './template';

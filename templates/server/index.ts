@@ -5,7 +5,7 @@ import cors from "cors";
 import mongoose, { ConnectOptions, Mongoose } from "mongoose";
 import { DATABASE_URL, SERVER_PORT } from "./config";
 import { Server } from "http";
-import templateRouter from "./routes/template";
+import { templateRouter } from "./routes";
 
 // app
 const app = express();
@@ -28,8 +28,6 @@ const connectDB = () => {
   const url = DATABASE_URL;
   const options = {
     useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
   };
   return mongoose.connect(url, <ConnectOptions>options);
 };
