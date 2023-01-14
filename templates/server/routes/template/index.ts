@@ -4,4 +4,4 @@ const router = Router();
 
 router.get("/template", template);
 
-export { router };
+export default { router };
