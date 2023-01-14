@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "start": "ts-node .",
+    "dev": "../../node_modules/nodemon/bin/nodemon.js"
+  },
+  "author": "Hernan Chalco"
+}
