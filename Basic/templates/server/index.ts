@@ -96,10 +96,14 @@ const stopSystems = (server: Server) => {
 
 if (require.main === module) {
   startSystems()
-    .then((value) => {
+    .then((server) => {
       console.log("Server up and running.");
-      process.on("SIGTERM", stopSystems);
-      process.on("SIGINT", stopSystems);
+      process.on("SIGTERM", () => {
+        stopSystems(server);
+      });
+      process.on("SIGINT", () => {
+        stopSystems(server);
+      });
     })
     .catch((error) => {
       console.error(error);
