@@ -15,13 +15,11 @@ const serverPackagePath = path.join(__dirname, '..', '..', 'packages', 'server',
 const updatePackage = (templatePackage, currentPackage, currentPackagePath) => {
   const newPackage = { ...currentPackage, ...templatePackage };
   const data = JSON.stringify(newPackage);
-  console.log("inside updatePackage");
   fs.writeFile(currentPackagePath, data, (err) => {
     if (err) {
       console.log('Cannot write file');
       throw err;
     }
-    console.log("Data written to file");
   });
 };
 
