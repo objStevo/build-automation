@@ -1,12 +1,16 @@
 import { Provider } from "react-redux";
 import { store } from "../store";
+import { createTheme, ThemeProvider } from "@mui/material";
+import { themeOptions } from "../components/theme";
 
-const HomePage: any = () => {
+const Home: any = () => {
   return (
     <Provider store={store}>
-      <h1>Welcome</h1>
+      <ThemeProvider theme={theme}>
+        <h1>Welcome</h1>
+      </ThemeProvider>
     </Provider>
   );
 };
 
-export default HomePage;
+export default Home;
