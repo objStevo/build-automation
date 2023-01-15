@@ -6,7 +6,7 @@ import { themeOptions } from "../components/theme";
 const Home: any = () => {
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={themeOptions}>
         <h1>Welcome</h1>
       </ThemeProvider>
     </Provider>
