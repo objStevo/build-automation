@@ -16,8 +16,8 @@ npm init -y -w ./packages/server
 npm i typescript dotenv --workspaces --save-dev
 
 #Install client dependencies
-npm i @types/next @types/react @types/react-redux @types/react-router-dom @types/react-dom -w ./packages/client --save-dev
-npm i next react react-dom @reduxjs/toolkit react-redux react-router-dom request request-promise @mui/icons-material @mui/material @emotion/react @emotion/styled -w ./packages/client --save
+npm i @types/next @types/react @types/react-redux  @types/react-dom -w ./packages/client --save-dev
+npm i next react react-dom @reduxjs/toolkit react-redux request request-promise @mui/icons-material @mui/material @emotion/react @emotion/styled -w ./packages/client --save
 
 #Install server dependencies
 npm i nodemon morgan ts-node @types/nodemon @types/node @types/express @types/morgan @types/cookie-parser @types/cors @types/mongoose -w ./packages/server --save-dev
